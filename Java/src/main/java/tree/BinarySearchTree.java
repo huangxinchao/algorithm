@@ -21,16 +21,23 @@ public class BinarySearchTree {
     *       1、没有子节点
     *       2、只有一个子节点
     *       3、有两个子节点
+    *
+    *
     * */
     private Node root ;
 
     public static void main(String[] args) {
         BinarySearchTree tree = new BinarySearchTree();
-        tree.insert(3);
-        tree.insert(1);
-        tree.insert(5);
-        tree.insert(2);
-        tree.insert(9);
+        tree.insert(30);
+        tree.insert(20);
+        tree.insert(50);
+        tree.insert(10);
+        tree.insert(25);
+        tree.insert(21);
+        tree.insert(26);
+        tree.floorLoop(tree.root);
+        tree.delete(20);
+        System.out.println("================");
         tree.floorLoop(tree.root);
     }
 
@@ -97,6 +104,52 @@ public class BinarySearchTree {
         }
     }
 
+
+    public void delete(int _data){
+        if (root==null)return ;
+        Node tmpNode = root ;
+        Node preNode = null ;
+        while (tmpNode != null && tmpNode.data != _data){
+            preNode = tmpNode ;
+            if (_data>tmpNode.data){
+                if (tmpNode.right != null)tmpNode=tmpNode.right;
+                else return ;
+            }else {
+                if (tmpNode.left != null)tmpNode=tmpNode.left;
+                else return ;
+            }
+        }
+
+        if (tmpNode==null)return ; //如果没找到相应的值，则直接退出
+
+        //处理删除节点下有两个节点的情况
+        if (tmpNode.left != null && tmpNode.right != null){
+                Node tNode = tmpNode.right ;
+                Node pNode = tmpNode ;
+                while (tNode.left != null){
+                    pNode = tNode ;
+                    tNode = tNode.left ;
+                }
+                // 找到最小节点tNode时，将值赋给tmpNode
+                tmpNode.data = tNode.data ;
+                //此时变成只要删除tmpNode节点即可
+                tmpNode = tNode ;
+                preNode = pNode ;
+        }
+
+        Node child  = null ;
+        if (tmpNode.right != null)child=tmpNode.right;
+        else if (tmpNode.left != null)child=tmpNode.left ;
+
+        if (preNode==null) {
+            root = null;
+            return;
+        }
+
+        if (preNode.left == tmpNode)preNode.left=child;
+        else preNode.right = child ;
+
+    }
 
     class Node {
         private Node left ;
