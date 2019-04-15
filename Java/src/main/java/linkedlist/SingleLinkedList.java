@@ -1,4 +1,7 @@
 package linkedlist;
+
+import java.util.LinkedList;
+
 /*
  * 
  * 1、插入 ：头插入和尾插入
@@ -8,6 +11,7 @@ package linkedlist;
  * 5、链表中环的检测
  * 6、求链表的中间节点
  * 7、删除链表倒数第n个节点
+ * 8、回文判断
  * */
 public class SingleLinkedList {
 	private Node head ;
@@ -17,12 +21,10 @@ public class SingleLinkedList {
 		list.tailInsert(1);
 		list.tailInsert(2);
 		list.tailInsert(3);
-		list.tailInsert(4);
-//		list.generateLoop(4);
-		Node result = list.deleteReserveNode(6);
-		System.out.println(result.data);
-		System.out.println("--------");
-		list.printAll(list.head);
+		list.tailInsert(2);
+		list.tailInsert(1);
+		boolean result = list.palindrome(list.head);
+		System.out.println(result);
 	}
 	
 	//插入-头插入
@@ -230,6 +232,69 @@ public class SingleLinkedList {
 		preNode.next = (tmpNode.next==null)?null:tmpNode.next;
 		
 		return tmpNode;
+	}
+	
+	/*
+	 * 回文判断
+	 * 1、利用快慢指针，找到中间节点m
+	 * 2、从head至m反转
+	 * 3、判断链表节点奇偶数，如果是奇 ,将链表分为两部分，left and right 
+	 * 4、判断left和right是否一致
+	 * */
+	public boolean palindrome(Node _head) {
+		if (_head == null || _head.next == null)return false ; 
+		Node fast = _head ;
+		Node slow = _head ; 
+		//获取中间节点slow
+		while (fast.next != null && fast.next.next != null) {
+			slow = slow.next ; 
+			fast = fast.next.next ; 
+		}
+		//判断节点是奇偶数  fast.next == null 说明遍历到了最后一个节点，fast的遍历为1-3-5... 所以链表总节点为奇数
+		Node right = slow.next ;
+		Node left = null; 
+		if (fast.next == null)left = inserve(slow).next;
+		else left = inserve(slow);
+        
+		boolean result = TFResult(left,right);
+		return result; 
+	}
+	
+	//指定某个节点开始反转
+	public Node inserve(Node _pNode) {
+		if (_pNode == null)return _pNode ; 
+		Node preNode = null ; 
+		Node tmpNode = head ; 
+		Node nextNode = null ; 
+		while (tmpNode != _pNode) {
+			nextNode = tmpNode.next ;
+			tmpNode.next = preNode ; 
+			preNode = tmpNode ; 
+			tmpNode = nextNode; 
+		}
+		tmpNode.next = preNode ; 
+		return tmpNode; 	
+	}
+	
+	/*
+	 * 判断两个链表是否一样
+	 * 思路：
+	 *     用是否将两个链表遍历结束为判断，如果两个链表相等，那么必定两个链表都遍历完，
+	 *     只要有一个链表没有结束，那么必定为两个不相同
+	 * */
+	public boolean TFResult(Node node1,Node node2) {
+		Node tmp1 = node1 ; 
+		Node tmp2 = node2;
+		while (tmp1 != null && tmp2 != null) {
+			if (tmp1.data == tmp2.data) {
+				tmp1 = tmp1.next ; 
+				tmp2 = tmp2.next ;
+			}else {
+				break ; 
+			}
+		}
+		if(tmp1 !=null || tmp2 != null)return false ;
+		return true; 
 	}
 	
 	class Node{
